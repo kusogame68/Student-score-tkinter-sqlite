@@ -1,0 +1,8 @@
+虛擬環境建置所需套件:pyinstaller,pandas
+Python 3.11.4
+pip install pyinstaller==5.13.0
+
+pyinstaller -F -w --icon=./Image/login.ico CreatAccountSystem.py
+pyinstaller -F -w --icon=./Image/doc.ico StudentsScoreSystem.py
+	-w 不帶控制台
+	--icon=./Image/index.ico 變更exe檔案圖片(路徑可變更)
