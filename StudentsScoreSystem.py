@@ -56,7 +56,7 @@ class StudentsDatabase:
         else:
             self.select_under_2()
         return self.table_str
-   
+
     # 開啟
     def db_open(self):
         try:
@@ -110,7 +110,7 @@ class StudentsDatabase:
     def db_delete(self,state=0,data=None):
         if self.conn is not None:
             try:
-                if data!=None:
+                if data is not None:
                     if state==1:
                         sql=f'DELETE FROM {self.table_name} where {self.table_index[0]} is {data};'
                     else:
@@ -139,7 +139,7 @@ class StudentsTkinter(StudentsDatabase):
     def __init__(self,title=None,geometry=None,resizable=False,iconbitmap=None):
         # 存取父類init屬性
         super().__init__()
-        if title==None:
+        if title is None:
             self.title=self.db_name[:-3]
         else:
             self.title=title
@@ -379,7 +379,7 @@ class StudentsTkinter(StudentsDatabase):
         self.c='\n'.join(f'{self.ety_ind[i]}:{entrys_get[i]},' for i in range(len(self.ety_ind)))
         del avg
         return entrys_get
-      
+
     # 查詢
     def tk_select(self,state=0):
         if self.check_conn_state()=='yet':
@@ -401,7 +401,7 @@ class StudentsTkinter(StudentsDatabase):
             else:
                 self.show_len_file()
         except Exception as e:
-           print(e)
+            print(e)
     
 
     def tk_update(self):
@@ -447,10 +447,12 @@ class StudentsTkinter(StudentsDatabase):
         for i in range(len(self.entrys[1:])):
             if self.entrys[1:][i].get()!='':
                 merge_sql+=f'{self.table_index[i+2]}={self.entrys[1:][i].get()} ,'
-                if i!=0:numbers.append(eval(self.entrys[1:][i].get()))
+                if i!=0:
+                    numbers.append(eval(self.entrys[1:][i].get()))
             else:
                 merge_sql+=f'{self.table_index[i+2]}={self.listbox.get(self.select)[i+2]} ,'
-                if i!=0:numbers.append(eval(self.listbox.get(self.select)[i+2]))
+                if i!=0:
+                    numbers.append(eval(self.listbox.get(self.select)[i+2]))
         avg=round(pd.Series(numbers).mean(),1)
         merge_sql+=f'平均分={avg} where {self.table_index[0]} is {self.listbox.get(self.select)[0]};'
         del numbers,avg
@@ -465,12 +467,14 @@ class StudentsTkinter(StudentsDatabase):
             for i in range(len(self.entrys[1:])):
                 if self.entrys[1:][i].get()!='':
                     merge_sql+=f'{self.table_index[i+2]}={self.entrys[1:][i].get()} ,'
-                    if i!=0:numbers.append(eval(self.entrys[1:][i].get()))
+                    if i!=0:
+                        numbers.append(eval(self.entrys[1:][i].get()))
                 else:
                     key_select=tuple(filter(lambda x: self.entrys[0].get() in x,super().db_select()))
                     key_result=tuple(i for i in key_select if i[1]==self.entrys[0].get())
                     merge_sql+=f'{self.table_index[i+2]}={key_result[0][i+2]} ,'
-                    if i!=0:numbers.append(eval(key_result[0][i+2]))
+                    if i!=0:
+                        numbers.append(eval(key_result[0][i+2]))
             avg=round(pd.Series(numbers).mean(),1)
             merge_sql+=f'平均分={avg} where {self.ety_ind[0]} is {self.entrys[0].get()};'  
             del numbers,avg
@@ -575,7 +579,7 @@ class LoginView(StudentsTkinter):
             self.list=cur.execute(sql)
             if any(i[1] == self.entry0.get() and i[2] == self.entry1.get() for i in self.list):
                 return 'success'
-              
+
     def run_main_program(self):
         st=StudentsTkinter(iconbitmap=r'..\Image\person.ico')
         st.get_win()
@@ -583,4 +587,3 @@ class LoginView(StudentsTkinter):
 if __name__=='__main__':
     lv=LoginView(iconbitmap=r'..\Image\login.ico')
     lv
-    

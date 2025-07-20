@@ -21,7 +21,7 @@ class CreatAccountTkinter(CreatAccountDatabase,st):
     def __init__(self,title=None,geometry=None,resizable=False,iconbitmap=None):
         # 存取父類init屬性
         super().__init__()
-        if title==None:
+        if title is None:
             self.title=self.db_name[:-3]
         else:
             self.title=title
@@ -51,7 +51,8 @@ class CreatAccountTkinter(CreatAccountDatabase,st):
     def creat_csv(self):
         if self.conn is not None:
             try:
-                if len(super().db_select())==0:return
+                if len(super().db_select())==0:
+                    return
                 selectfile=super().db_select()
                 getfile=pd.DataFrame(selectfile,columns=self.table_index)
                 getfile.to_csv(self.db_name.replace('.db','.csv'),encoding='utf-8-sig',index=False)

@@ -1,8 +1,0 @@
-/dist/* linguist-vendored
-/build/* linguist-vendored
-*.html linguist-vendored
-*.tex linguist-vendored
-*.toc linguist-vendored
-*.pkg linguist-vendored
-*.pyz linguist-vendored
-*.spec linguist-vendored

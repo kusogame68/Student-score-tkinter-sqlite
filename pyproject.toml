@@ -1,0 +1,14 @@
+[project]
+name = "Student-score-tkinter-sqlite"
+version = "0.1.0"
+description = "A Python GUI application for comprehensive student score and manager account management, built with Tkinter and SQLite, featuring CRUD operations and CSV export."
+readme = "README.md"
+requires-python = ">=3.11.13"
+dependencies = [
+    "pandas>=2.3.1",
+]
+
+[dependency-groups]
+dev = [
+    "pyinstaller>=6.14.2",
+]
