@@ -23,8 +23,6 @@ A Python GUI application for comprehensive student score and manager account man
 
 ## 🚀 Getting Started
 
-## 🚀 Getting Started
-
 This project is primarily designed to run as standalone executable files. The Python source code (`.py` files) provided in this repository is intended for building these executables.
 
 ### 1. Clone the Repository
