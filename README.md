@@ -77,8 +77,8 @@ Follow these steps to set up your development environment and build the executab
 
 Once the executables are built (you'll find them in the newly created `dist/` folder):
 
-1.  Launch `./dist/StudentsScoreSystem.exe` for student score management.
-2.  Launch `./dist/CreatAccountSystem.exe` for managing manager accounts.
+1.  Launch `./dist/CreatAccountSystem.exe` for creating log-in account and managing manager accounts.
+2.  Launch `./dist/StudentsScoreSystem.exe` for student score management.
 3.  Log in as a manager to begin managing student data.
 4.  All student scores can be exported to a CSV file from within the application.
 
