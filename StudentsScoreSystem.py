@@ -112,9 +112,9 @@ class StudentsDatabase:
             try:
                 if data is not None:
                     if state==1:
-                        sql=f'DELETE FROM {self.table_name} where {self.table_index[0]} is {data};'
+                        sql=f'DELETE FROM {self.table_name} where {self.table_index[0]} = {data};'
                     else:
-                        sql=f'DELETE FROM {self.table_name} where {self.table_index[1]} is {data};'
+                        sql=f'DELETE FROM {self.table_name} where {self.table_index[1]} = {data};'
                 else:
                     sql=f'DELETE FROM {self.table_name};'
                 self.cur.execute(sql)
@@ -146,6 +146,7 @@ class StudentsTkinter(StudentsDatabase):
         self.geometry=geometry
         self.resizable=resizable
         self.iconbitmap=iconbitmap
+        self.insert_summary=''
         
     # 建構tkinter    
     def get_win(self):
@@ -286,7 +287,7 @@ class StudentsTkinter(StudentsDatabase):
         key=key.lower()
         if key=='yes':
             self.label0.config(text='Add data success!',fg='green')
-            msg.showinfo(title='Information',message=f'{self.c} \n寫入成功!') 
+            msg.showinfo(title='Information',message=f'{self.insert_summary} \n寫入成功!') 
         elif key=='oops':
             msg.showerror(title='Error', message='請輸入完整資料!')
         elif key=='repeat':
@@ -376,7 +377,7 @@ class StudentsTkinter(StudentsDatabase):
     def write_decide(self):
         avg=round(pd.Series((eval(self.entrys[2].get()),eval(self.entrys[3].get()),eval(self.entrys[4].get()))).mean(),1)
         entrys_get=(tuple([i.get() for i in self.entrys]+[avg]))
-        self.c='\n'.join(f'{self.ety_ind[i]}:{entrys_get[i]},' for i in range(len(self.ety_ind)))
+        self.insert_summary='\n'.join(f'{self.ety_ind[i]}:{entrys_get[i]},' for i in range(len(self.ety_ind)))
         del avg
         return entrys_get
 
@@ -446,15 +447,15 @@ class StudentsTkinter(StudentsDatabase):
         #0.1.2.3..
         for i in range(len(self.entrys[1:])):
             if self.entrys[1:][i].get()!='':
-                merge_sql+=f'{self.table_index[i+2]}={self.entrys[1:][i].get()} ,'
+                merge_sql+=f'{self.table_index[i+2]}="{self.entrys[1:][i].get()}" ,'
                 if i!=0:
                     numbers.append(eval(self.entrys[1:][i].get()))
             else:
-                merge_sql+=f'{self.table_index[i+2]}={self.listbox.get(self.select)[i+2]} ,'
+                merge_sql+=f'{self.table_index[i+2]}="{self.listbox.get(self.select)[i+2]}" ,'
                 if i!=0:
                     numbers.append(eval(self.listbox.get(self.select)[i+2]))
         avg=round(pd.Series(numbers).mean(),1)
-        merge_sql+=f'平均分={avg} where {self.table_index[0]} is {self.listbox.get(self.select)[0]};'
+        merge_sql+=f'平均分={avg} where {self.table_index[0]} = {self.listbox.get(self.select)[0]};'
         del numbers,avg
         return merge_sql
     
@@ -466,17 +467,17 @@ class StudentsTkinter(StudentsDatabase):
             merge_sql=''
             for i in range(len(self.entrys[1:])):
                 if self.entrys[1:][i].get()!='':
-                    merge_sql+=f'{self.table_index[i+2]}={self.entrys[1:][i].get()} ,'
+                    merge_sql+=f'{self.table_index[i+2]}="{self.entrys[1:][i].get()}" ,'
                     if i!=0:
                         numbers.append(eval(self.entrys[1:][i].get()))
                 else:
                     key_select=tuple(filter(lambda x: self.entrys[0].get() in x,super().db_select()))
                     key_result=tuple(i for i in key_select if i[1]==self.entrys[0].get())
-                    merge_sql+=f'{self.table_index[i+2]}={key_result[0][i+2]} ,'
+                    merge_sql+=f'{self.table_index[i+2]}="{key_result[0][i+2]}" ,'
                     if i!=0:
                         numbers.append(eval(key_result[0][i+2]))
             avg=round(pd.Series(numbers).mean(),1)
-            merge_sql+=f'平均分={avg} where {self.ety_ind[0]} is {self.entrys[0].get()};'  
+            merge_sql+=f'平均分={avg} where {self.ety_ind[0]} = {self.entrys[0].get()};' 
             del numbers,avg
             return merge_sql
     

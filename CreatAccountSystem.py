@@ -33,19 +33,19 @@ class CreatAccountTkinter(CreatAccountDatabase,st):
             
     def write_decide(self):
         entrys_get=tuple(i.get() for i in self.entrys)
-        self.c='\n'.join(f'{self.ety_ind[i]}:{entrys_get[i]},' for i in range(len(self.ety_ind)))
+        self.insert_summary='\n'.join(f'{self.ety_ind[i]}:{entrys_get[i]},' for i in range(len(self.ety_ind)))
         return entrys_get
 
     def update_decide_curselection_notnull(self):
         self.select=self.listbox.curselection()[0]
-        merge_sql=f'{self.table_index[2]}={self.entrys[1].get()} where {self.table_index[0]} is {self.listbox.get(self.select)[0]};'
+        merge_sql=f'{self.table_index[2]}="{self.entrys[1].get()}" where {self.table_index[0]} = {self.listbox.get(self.select)[0]};'
         return merge_sql
     
     def update_decide_curselection_isnull(self):
         if self.entrys[0].get()!='':
             if self.tk_select('check_repeat')=='notfound':
                 return 'notfound'
-            merge_sql=f'{self.table_index[2]}={self.entrys[1].get()} where {self.ety_ind[0]} is {self.entrys[0].get()};'
+            merge_sql=f'{self.table_index[2]}="{self.entrys[1].get()}" where {self.ety_ind[0]} = "{self.entrys[0].get()}";'
             return merge_sql
 
     def creat_csv(self):
