@@ -89,7 +89,7 @@ Once the executables are built (you'll find them in the newly created `dist/` fo
 
 ---
 
-## 🔄 Version 2.0 Changes
+## Version 2.0 Changes
 
 ### What's New
 
