@@ -259,7 +259,7 @@ class StudentApp(BaseManagementUI):
             df['評級'] = df['平均分'].astype(float).apply(get_level)
             df.to_csv(self.db.db_name.replace('.db', '.csv'), encoding = 'utf-8-sig', index = False)
         except Exception:
-            self.show_error(f"匯出CSV失敗!")
+            self.show_error("匯出CSV失敗!")
 
 class LoginView:
     def __init__(self, iconbitmap: Optional[str] = None):
