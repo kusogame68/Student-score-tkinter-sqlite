@@ -1,6 +1,6 @@
-# Student-score-tkinter-sqlite
+# GUI-score-manager
 
-A Python GUI application for comprehensive student score and manager account management, built with **Tkinter** and **SQLite**, featuring CRUD operations and CSV export.
+A Python GUI application for the management of student scores and admin accounts, built with **Tkinter** and **SQLite**, featuring CRUD operations and CSV export.
 
 Version 2.0 - Refactored with modular architecture following SOLID principles.
 ---
@@ -31,8 +31,8 @@ This project is primarily designed to run as standalone executable files. The Py
 First, clone this project from GitHub to your local machine:
 
 ```bash
-git clone https://github.com/kusogame68/Student-score-tkinter-sqlite.git
-cd Student-score-tkinter-sqlite
+git clone https://github.com/kusogame68/GUI-score-manager.git
+cd GUI-score-manager
 ```
 
 ### 2. Prerequisites
@@ -50,7 +50,7 @@ Follow these steps to set up your development environment and build the executab
 
 1.  **Navigate to the project directory:**
     ```bash
-    cd Student-score-tkinter-sqlite
+    cd GUI-score-manager
     ```
 
 2.  **Initialize the `uv` environment and install dependencies:**
