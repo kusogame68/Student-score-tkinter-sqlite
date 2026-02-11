@@ -130,14 +130,14 @@ class StudentApp(BaseManagementUI):
             self.show_error(str(e))
             return
 
-        update_sql = self._build_update_sql(form_data, selected, all_datas)
+        update_sql, data = self._build_update_sql(form_data, selected, all_datas)
 
         if not update_sql:
             self.set_status('Not found file!', 'red')
             self.show_warning('查無此資料!')
             return
 
-        if self.db.update(update_sql):
+        if self.db.update(update_sql, data):
             self.refresh_list(self.db.select_all())
             self.set_status('Update data success!', 'green')
             self.show_info('資料已修改!')
@@ -157,22 +157,24 @@ class StudentApp(BaseManagementUI):
         selected = self.get_selected()
         student_id = self.get_form_data()[self.columns[1]]
 
-        condition = None
-
         if selected:
-            condition = f"{self.db.columns[0]} = {selected[0]}"
+            condition = f"{self.db.columns[0]} = ?"
+            data = (selected[0],)
         elif student_id:
             existing = [data[1] for data in all_datas]
             if student_id not in existing:
                 self.set_status('Not found file!', 'red')
                 self.show_warning('查無此資料!')
                 return
-            condition = f"{self.db.columns[1]} = '{student_id}'"
+            condition = f"{self.db.columns[1]} = ?"
+            data = (student_id,)
         else:
             if not self.ask_confirm('資料將會全部刪除,\n確定嗎?'):
                 return
+            condition = None
+            data = ()
 
-        if self.db.delete(condition):
+        if self.db.delete(data, condition):
             self.refresh_list(self.db.select_all())
             self.set_status('Delete data success!', 'green')
             self.show_info('資料已刪除!')
@@ -221,21 +223,31 @@ class StudentApp(BaseManagementUI):
             if not record:
                 return None
 
+        data = []
         name = form_data['姓名'] if form_data['姓名'] else record[2]
-        sql_parts = [f"{self.db.columns[2]} = '{name}'"]
+        sql_parts = [f"{self.db.columns[2]} = ?"]
+        data.append(name)
 
         scores = []
         for i, subject in enumerate(self.columns[3:-1], start = 3):
             score = form_data[subject] if form_data[subject] else record[i]
-            sql_parts.append(f"{self.db.columns[i]} = '{score}'")
+            sql_parts.append(f"{self.db.columns[i]} = ?")
+            data.append(score)
             scores.append(float(score))
 
         avg = round(sum(scores) / len(scores), 1)
-        sql_parts.append(f"平均分 = {avg}")
+        sql_parts.append("平均分 = ?")
+        data.append(avg)
 
-        where_clause = f"WHERE {self.db.columns[0]} = {record[0]}" if selected else f"WHERE {self.db.columns[1]} = '{form_data['學號']}'"
+        if selected:
+            where_clause = f"WHERE {self.db.columns[0]} = ?"
+            data.append(record[0])
+        else:
+            where_clause = f"WHERE {self.db.columns[1]} = ?"
+            data.append(form_data['學號'])
 
-        return ', '.join(sql_parts) + f" {where_clause};"
+        update_sql = ', '.join(sql_parts) + f" {where_clause};"
+        return update_sql, tuple(data)
 
     def _find_record_by_id(self, student_id: str, all_datas: List[Tuple]) -> Optional[Tuple]:
         for data in all_datas:
@@ -300,13 +312,13 @@ class LoginView:
         try:
             with sqlite3.connect('登入系統.db') as conn:
                 cur = conn.cursor()
-                sql = "SELECT * FROM person;"
-                results = cur.execute(sql)
+                sql = "SELECT * FROM person WHERE 帳號 = ? AND 密碼 = ?"
+                cur.execute(sql, (username, password))
+                result = cur.fetchone()
 
-                if any(result[1] == username and result[2] == password for result in results):
+                if result:
                     msg.showinfo('Success', '登入成功!')
                     self.win.destroy()
-
                     StudentApp(iconbitmap = r'..\Image\person.ico').run()
                 else:
                     msg.showerror('Fail', '登入失敗!')

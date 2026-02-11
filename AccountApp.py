@@ -112,16 +112,18 @@ class AccountApp(BaseManagementUI):
             return
 
         if selected:
-            update_sql = f"{self.db.columns[2]}='{password}' WHERE {self.db.columns[0]} = {selected[0]};"
+            update_sql = f"{self.db.columns[2]} = ? WHERE {self.db.columns[0]} = ?"
+            data = (password, selected[0])
         else:
             existing = [data[1] for data in all_datas]
             if account not in existing:
                 self.set_status('Not found file!', 'red')
                 self.show_warning('查無此資料!')
                 return
-            update_sql = f"{self.db.columns[2]}='{password}' WHERE {self.db.columns[1]} = '{account}';"
+            update_sql = f"{self.db.columns[2]} = ? WHERE {self.db.columns[1]} = ?"
+            data = (password, account)
 
-        if self.db.update(update_sql):
+        if self.db.update(update_sql, data):
             self.refresh_list(self.db.select_all())
             self.set_status('Update data success!', 'green')
             self.show_info('資料已修改!')
@@ -140,22 +142,25 @@ class AccountApp(BaseManagementUI):
 
         selected = self.get_selected()
         account = self.get_form_data()[self.subjects[0]]
-        condition = None
 
         if selected:
-            condition = f"{self.db.columns[0]} = {selected[0]}"
+            condition = f"{self.db.columns[0]} = ?"
+            data = (selected[0],)
         elif account:
             existing = [data[1] for data in all_datas]
             if account not in existing:
                 self.set_status('Not found file!', 'red')
                 self.show_warning('查無此資料!')
                 return
-            condition = f"{self.db.columns[1]} = '{account}'"
+            condition = f"{self.db.columns[1]} = ?"
+            data = (account,)
         else:
             if not self.ask_confirm('資料將會全部刪除,\n確定嗎?'):
                 return
+            condition = None
+            data = ()
 
-        if self.db.delete(condition):
+        if self.db.delete(data, condition):
             self.refresh_list(self.db.select_all())
             self.set_status('Delete data success!', 'green')
             self.show_info('資料已刪除!')

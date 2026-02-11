@@ -70,10 +70,10 @@ class Database:
             print(f"Database select fail : {e}")
             return []
 
-    def update(self, update_sql: str) -> bool:
+    def update(self, update_sql: str, data: Tuple) -> bool:
         try:
             sql : str = f"UPDATE {self.table_name} SET {update_sql}"
-            self.conn.execute(sql)
+            self.cur.execute(sql, data)
             self.conn.commit()
             return True
         except Exception as e:
@@ -81,13 +81,12 @@ class Database:
             print(f"Database update fail : {e}")
             return False
 
-    def delete(self, condition: Optional[str] = None) -> bool:
+    def delete(self, data: Tuple, condition: Optional[str]) -> bool:
         try:
             sql : str = f"DELETE FROM {self.table_name}"
             if condition:
                 sql += f" WHERE {condition}"
-
-            self.cur.execute(sql + ";")
+            self.cur.execute(sql + ";", data)
             self.conn.commit()
             return True
         except Exception as e:
