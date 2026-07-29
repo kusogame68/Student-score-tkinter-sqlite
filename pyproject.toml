@@ -1,6 +1,6 @@
 [project]
 name = "GUI-gradebook-manager"
-version = "0.3.0"
+version = "3.0.0"
 description = "A Tkinter and SQLite desktop application for managing student gradebooks and user accounts, featuring CRUD operations and CSV export."
 readme = "README.md"
 requires-python = ">=3.11.13"
@@ -11,4 +11,5 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pyinstaller>=6.14.2",
+    "ruff>=0.16.0",
 ]
