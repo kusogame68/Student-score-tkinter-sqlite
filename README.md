@@ -57,7 +57,7 @@ Follow these steps to set up your development environment and build the executab
 2.  **Initialize the `uv` environment and install dependencies:**
     This command will create a virtual environment (`.venv`) and install all required packages (including `pandas` and `pyinstaller`) as defined in `pyproject.toml`.
     ```cmd
-    uv sync --dev
+    uv sync
     ```
 
 3.  **Build the executable files:**
