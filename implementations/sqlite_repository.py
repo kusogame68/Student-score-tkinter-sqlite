@@ -10,6 +10,7 @@ Created on Wed Jun 17 12:16:07 2026
 
 import sqlite3
 from typing import List, Tuple, Optional, Dict
+from typing_extensions import override
 from interfaces.repository import Repository
 
 class SqliteRepository(Repository):
@@ -20,6 +21,7 @@ class SqliteRepository(Repository):
         self.conn: Optional[sqlite3.Connection] = None
         self.cur: Optional[sqlite3.Cursor] = None
 
+    @override
     def open(self) -> bool:
         try:
             self.conn = sqlite3.connect(self.db_name)
@@ -30,21 +32,7 @@ class SqliteRepository(Repository):
             print(f"Database open fail : {e}")
             return False
 
-    def _create_table(self) -> None:
-        sql: str = f"""
-            CREATE TABLE IF NOT EXISTS "{self.table_name}" (
-            "{self.columns[0]}" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "{self.columns[1]}" TEXT UNIQUE NOT NULL
-        """
-
-        for col in self.columns[2:]:
-            sql += f',"{col}" TEXT'
-
-        sql += ");"
-
-        self.cur.execute(sql)
-        self.conn.commit()
-
+    @override
     def insert(self, values: Dict[str, str]) -> bool:
         try:
             data = tuple(values[col] for col in self.columns[1:])
@@ -52,7 +40,7 @@ class SqliteRepository(Repository):
             cols: str = ', '.join(f'"{col}"' for col in self.columns[1:])
             sql: str = f'INSERT INTO "{self.table_name}" ({cols}) VALUES ({placeholders});'
 
-            self.conn.execute(sql, data)
+            self.cur.execute(sql, data)
             self.conn.commit()
             return True
         except Exception as e:
@@ -60,6 +48,7 @@ class SqliteRepository(Repository):
             print(f"Database insert fail : {e}")
             return False
 
+    @override
     def select_all(self) -> List[Tuple]:
         try:
             sql: str = f'SELECT * FROM "{self.table_name}";'
@@ -68,6 +57,7 @@ class SqliteRepository(Repository):
             print(f"Database select fail : {e}")
             return []
 
+    @override
     def update(self, record_id: int, values: Dict[str, str]) -> bool:
         try:
             set_clause: str = ', '.join(f'"{col}" = ?' for col in values.keys())
@@ -82,6 +72,7 @@ class SqliteRepository(Repository):
             print(f"Database update fail : {e}")
             return False
 
+    @override
     def delete(self, record_id: Optional[int] = None) -> bool:
         try:
             sql: str = f'DELETE FROM "{self.table_name}"'
@@ -99,11 +90,28 @@ class SqliteRepository(Repository):
             print(f"Database delete fail : {e}")
             return False
 
+    @override
     def close(self) -> None:
         if self.conn:
             self.conn.close()
-            self.conn = None
             self.cur = None
+            self.conn = None
 
+    @override
     def is_connected(self) -> bool:
         return self.conn is not None
+
+    def _create_table(self) -> None:
+        sql: str = f"""
+            CREATE TABLE IF NOT EXISTS "{self.table_name}" (
+            "{self.columns[0]}" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "{self.columns[1]}" TEXT UNIQUE NOT NULL
+        """
+
+        for col in self.columns[2:]:
+            sql += f',"{col}" TEXT'
+
+        sql += ");"
+
+        self.cur.execute(sql)
+        self.conn.commit()

@@ -13,6 +13,7 @@ Created on Wed Jun 17 12:16:07 2026
 import tkinter as tk
 import tkinter.messagebox as msg
 from typing import List, Tuple, Optional, Dict, Callable
+from typing_extensions import override
 from interfaces.view import View
 
 class TkManagementView(View):
@@ -35,35 +36,45 @@ class TkManagementView(View):
 
     # --- View contract methods ---
 
+    @override
     def bind_commands(self, commands: Dict[str, Callable]) -> None:
         self._callbacks = commands
 
+    @override
     def get_form_data(self) -> Dict[str, str]:
         return {name: entry.get() for name, entry in self.entries.items()}
 
+    @override
     def get_selected(self) -> Optional[Tuple]:
         selection = self.listbox.curselection()
         return self.listbox.get(selection[0]) if selection else None
 
+    @override
     def refresh_list(self, data: List[Tuple]) -> None:
         self.list_var.set(data)
 
+    @override
     def set_status(self, text: str, color: str = 'green') -> None:
         if self.status_label:
             self.status_label.config(text = text, fg = color)
 
+    @override
     def show_info(self, message: str) -> None:
         msg.showinfo('Information', message)
 
+    @override
     def show_warning(self, message: str) -> None:
         msg.showwarning('Warning', message)
 
+    @override
     def show_error(self, message: str) -> None:
         msg.showerror('Error', message)
 
+    @override
     def ask_confirm(self, message: str) -> bool:
         return msg.askquestion('Question', message) == 'yes'
 
+    @override
     def close(self) -> None:
         self.win.destroy()
 
